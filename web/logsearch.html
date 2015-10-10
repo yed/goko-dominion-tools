@@ -75,7 +75,7 @@
     <a href='https://github.com/aiannacc/Goko-Salvager/wiki'>Goko Salvager Extension</a>
     <br>
 
-    <h2>Goko Log Search</h2>
+    <h2>Online Dominion 2.0 Log Search</h2>
 
     <p>
     <p class=date>{{ago_full}}</p>
@@ -156,10 +156,8 @@
              <select name="rating" style="width: 99%">
                <option value="unrated">Unrated</option>
                <option value="casual">Casual</option>
-               <option value="pro">Pro</option>
-               <option value="adventure">Adventures</option>
-               <option value="unknown">Unknown (Pre-May 13)</option>
-               <option value="pro+">Pro/Unknown</option>
+               <option value="professional">Professional</option>
+               <option value="campaigns">Campaigns</option>
                <option value="any">Any</option>
              </select>
              </span>
@@ -284,8 +282,8 @@
     {% for g in games %}
     {% set timestr = datetime.datetime.strftime(g.time,'%Y/%m/%d %H:%M') %}
     {% set dirstr = datetime.datetime.strftime(g.time,'%Y%m%d') %}
-    {% set logurl = "http://dominionlogs.goko.com/%s/%s" % (dirstr,g.logfile) %}
-    {% set formattedurl = "./static/logprettifier.html?%s/%s" % (dirstr,g.logfile) %}
+    {% set logurl = "%s" % (g.logfile.replace('#','/')) %}
+    {% set formattedurl = "./static/logprettifier.html?%s" % (g.logfile.replace('#','/')) %}
 
     {{timestr}}
     <table border="0" cellpadding="2">

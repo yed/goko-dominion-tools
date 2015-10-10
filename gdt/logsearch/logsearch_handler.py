@@ -30,7 +30,7 @@ class SearchHandler(tornado.web.RequestHandler):
             'nonsupply': '',
             'minturns': '',
             'maxturns': '',
-            'rating': 'pro+',
+            'rating': 'professional',
             'quit': 'false',
             'resign': '',
             'startdate': '08/05/2012',

@@ -340,7 +340,7 @@ def search_all_2p_scores(limit, time, logfile):
              JOIN presult p1 USING(logfile)
              JOIN presult p2 USING(logfile)
             WHERE p1.pname < p2.pname
-              AND g.rating = 'pro'
+              AND g.rating = 'professional'
               AND g.pcount = 2
               AND NOT g.guest
               AND ($2::timestamp IS NULL OR g.time>=$2)
@@ -351,7 +351,7 @@ def search_all_2p_scores(limit, time, logfile):
 
 
 def get_multiplayer_scores(limit, time, logfile, allow_guests=False,
-                           allow_bots=False, rating_system='pro',
+                           allow_bots=False, rating_system='professional',
                            include_unknown_rs=False, min_turns=0,
                            pcount=None):
 

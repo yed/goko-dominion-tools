@@ -83,7 +83,7 @@ ALTER TABLE public.gain OWNER TO ai;
 
 CREATE TABLE game (
     "time" timestamp without time zone NOT NULL,
-    logfile character varying(50) NOT NULL,
+    logfile character varying(500) NOT NULL,
     supply character varying(500) NOT NULL,
     colony boolean NOT NULL,
     shelters boolean NOT NULL,
@@ -91,7 +91,7 @@ CREATE TABLE game (
     plist character varying(500) NOT NULL,
     bot boolean NOT NULL,
     guest boolean NOT NULL,
-    rating character varying(10) DEFAULT NULL::character varying,
+    rating character varying(50) DEFAULT NULL::character varying,
     adventure boolean NOT NULL,
     dup_supply boolean
 );
@@ -137,7 +137,7 @@ CREATE TABLE presult (
     quit boolean NOT NULL,
     turnorder smallint,
     resign boolean NOT NULL,
-    logfile character varying(50) NOT NULL,
+    logfile character varying(500) NOT NULL,
     pcount smallint NOT NULL,
     pname_lower character varying(50)
 );
@@ -277,6 +277,75 @@ CREATE TABLE ts_system (
     draw_prob double precision,
     sigma_reversion double precision
 );
+
+--
+-- Name: parsefail; Type: TABLE; Schema: public; Owner: ai; Tablespace: 
+--
+
+CREATE TABLE parsefail (
+    "time" timestamp without time zone NOT NULL,
+    logfile character varying(500) NOT NULL
+);
+
+
+ALTER TABLE parsefail OWNER TO ai;
+
+--
+-- Name: fail_tl; Type: CONSTRAINT; Schema: public; Owner: ai; Tablespace: 
+--
+
+ALTER TABLE ONLY parsefail
+    ADD CONSTRAINT fail_tl UNIQUE ("time", logfile);
+
+--
+-- Name: ts_rating2; Type: TABLE; Schema: public; Owner: ai; Tablespace: 
+--
+
+CREATE TABLE ts_rating2 (
+    "time" timestamp without time zone,
+    logfile character varying(500),
+    pname character varying(50),
+    mu numeric(10,4),
+    sigma numeric(10,4),
+    numgames integer,
+    level_m3s numeric(10,4),
+    guest boolean,
+    system character varying(20)
+);
+
+
+ALTER TABLE ts_rating2 OWNER TO ai;
+
+--
+-- Name: ts_guest; Type: INDEX; Schema: public; Owner: ai; Tablespace: 
+--
+
+CREATE INDEX ts_guest ON ts_rating2 USING btree (guest);
+
+
+--
+-- Name: ts_level; Type: INDEX; Schema: public; Owner: ai; Tablespace: 
+--
+
+CREATE INDEX ts_level ON ts_rating2 USING btree (level_m3s);
+
+
+--
+-- Name: ts_logfile; Type: INDEX; Schema: public; Owner: ai; Tablespace: 
+--
+
+CREATE INDEX ts_logfile ON ts_rating2 USING btree (logfile);
+
+
+--
+-- Name: ts_mu; Type: INDEX; Schema: public; Owner: ai; Tablespace: 
+--
+
+CREATE INDEX ts_mu ON ts_rating2 USING btree (mu);
+
+
+--
+-- Name: ts_numgames; Type: INDEX; Schema: public; Owner: ai; Tablespace: 
 
 
 ALTER TABLE public.ts_system OWNER TO ai;

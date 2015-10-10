@@ -16,9 +16,9 @@ class KingdomHandler(tornado.web.RequestHandler):
         logurl = self.get_argument('logurl', default='')
         if(logurl):
             try:
-                m = re.match('.*/(201.*/log.*txt)', logurl)
+                m = re.match('.*/(game_logs/20.*/log.*txt)', logurl)
                 logurl = m.group(1)
-                logurl = 'http://dominionlogs.goko.com/' + logurl
+                logurl = 'http://dominion-game-logs.s3.amazonaws.com/' + logurl
             except:
                 err = True
                 logurl = ''

@@ -121,7 +121,7 @@ if __name__ == '__main__':
         level=logging.INFO,
         format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
         datefmt='%m-%d %H:%M',
-        filename='/var/log/comp_server.log',
+	filename='/var/log/comp_server.log',
         filemode='a')
 
     # Logg to console
@@ -134,7 +134,7 @@ if __name__ == '__main__':
     if len(sys.argv) == 2 and sys.argv[1] == 'test':
         ports = [7080, 7443, 7888, 7889]
     else:
-        ports = [80, 443, 8888, 8889]
+        ports = [80, 8443, 8888, 8889]
     print(sys.argv)
     print(ports)
 

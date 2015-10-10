@@ -22,8 +22,8 @@ import gdt.ratings.update as ru
 
 # Constants
 LOGLEVEL = logging.DEBUG
-LINK_REGEX = re.compile('href="(log\S*txt)"')
-FILE_REGEX = re.compile("log\.(.*)\.(.*)\.txt")
+LINK_REGEX = re.compile('href="(\S*log\S*txt)"')
+FILE_REGEX = re.compile(".*log\.(.*)\.(.*)\.txt")
 LOG_DIR = '/gokologs'                 # For linode server
 #LOG_DIR = '/mnt/raid/media/dominion/logs'  # For home server
 
@@ -49,7 +49,7 @@ s = requests.Session()
 # Download a log and save it to file
 def download_log(logfile, dayurl, log_dir):
     headers = {'Accept-Encoding': 'gzip, deflate'}
-    url = dayurl + '/' + logfile
+    url = logfile.replace('#','/')
     logger.debug('Fetching %s' % url)
     try:
         #r = s.get(url, headers=headers, timeout=60, stream=False, proxies=sproxies)
@@ -66,13 +66,16 @@ def download_log(logfile, dayurl, log_dir):
 def download_new_logs(date):
 
     datestr = date.strftime('%Y%m%d')
-    #dayurl = 'http://dominionlogs.goko.com/%s' % datestr
-    dayurl = 'http://logs.prod.dominion.makingfun.com/%s' % datestr
+    dayurl = 'http://dominion-game-logs.s3.amazonaws.com/%s/index.html' % datestr
+    daylogurlbase = 'http://dominion-game-logs.s3.amazonaws.com/game_logs/%s' % datestr
+
     #r = requests.get(dayurl, timeout=30, proxies=sproxies)
     r = requests.get(dayurl, timeout=30)
     #print(r.text)
     remote_logs = LINK_REGEX.findall(r.text)
-
+    #replace / with #
+    remote_logs[:] = [log.replace("/", "#").replace("https","http") for log in remote_logs]
+    
     # Determine which logs haven't already been downloaded
     log_dir = '%s/%s' % (LOG_DIR, datestr)
     if not os.path.isdir(log_dir):
@@ -90,7 +93,7 @@ def download_new_logs(date):
         #    i += 1
         #else:
         #    break
-        download_log(lf, dayurl, log_dir)
+        download_log(lf, daylogurlbase, log_dir)
 
     logger.info('Finished downloading')
 
@@ -203,7 +206,7 @@ def rate_new_games(rhistory,
     ru.rate_games_since(t, l, [rhistory],
                         allow_guests=allow_guests, allow_bots=allow_bots,
                         min_turns=min_turns, only_2p_games=only_2p,
-                        use_gameresult_cache=False, gokomode='pro',
+                        use_gameresult_cache=False, gokomode='professional',
                         chunk_size=max_games/3, max_games=max_games)
 
     logger.debug('Rated games through: %s, %s' % rhistory.get_latest_game())

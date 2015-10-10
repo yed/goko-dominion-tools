@@ -134,7 +134,7 @@ if __name__ == '__main__':
     if len(sys.argv) == 2 and sys.argv[1] == 'test':
         ports = [7080, 7443, 7888, 7889]
     else:
-        ports = [80, 8443, 8888, 8889]
+        ports = [80, 443, 8888, 8889]
     print(sys.argv)
     print(ports)
 

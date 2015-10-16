@@ -24,7 +24,7 @@ import gdt.ratings.update as ru
 LOGLEVEL = logging.DEBUG
 LINK_REGEX = re.compile('href="(\S*log\S*txt)"')
 FILE_REGEX = re.compile(".*log\.(.*)\.(.*)\.txt")
-LOG_DIR = '/gokologs'                 # For linode server
+LOG_DIR = '/makingfunlogs'                 # For linode server
 #LOG_DIR = '/mnt/raid/media/dominion/logs'  # For home server
 
 RATING_SYSTEM_NAME = 'isotropish_nobots'

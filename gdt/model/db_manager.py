@@ -22,7 +22,7 @@ logger = logging.getLogger('logwatcher')
 # Database connection object.
 # TODO: Initialized on first use instead of on load
 dbpass = open('dbpass').readline().strip();
-_con = postgresql.open(user='ai', host='gokosalvager.com', database='goko', password=dbpass)
+_con = postgresql.open(user='yed', host='gokosalvager.com', database='makingfun', password=dbpass)
 
 
 def prepare(conn, sql, d):

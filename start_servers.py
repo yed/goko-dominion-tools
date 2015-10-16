@@ -4,8 +4,6 @@ import sys
 import logging
 import os
 import json
-import socket
-
 from PIL import Image
 
 import tornado.web
@@ -26,33 +24,54 @@ from gdt.kingviz.kingviz_handler import KingdomHandler
 from gdt.ratings.assess import GokoProRatingQuery
 
 
-class ComprehensiveApplication(tornado.web.Application):
+class InsecureApplication(tornado.web.Application):
     def __init__(self):
         handlers = [
             (r"/", SearchHandler),
             (r"/logsearch", SearchHandler),
             (r"/logsearch/", SearchHandler),
-
-            (r"/(logsearch\.html)", DocumentSFH, {"path": "web/static"}),
-            (r"/(favicon\.ico)", DocumentSFH, {"path": "web/static/img"}),
-
-            (r"/script/(.*)", DocumentSFH, {"path": "web/static/script/"}),
-            (r"/img/(.*)", DocumentSFH, {"path": "web/static/img/"}),
-            (r"/css/(.*)", DocumentSFH, {"path": "web/static/css/"}),
-
-            (r"/query/leaderboard", LeaderboardQueryNobots),
-            (r"/query/gokoproratingquery", GokoProRatingQuery),
             (r"/kingdom", KingdomHandler),
             (r"/kingdom/", KingdomHandler),
             (r"/kingdomvisualize", KingdomHandler),
             (r"/kingdomvisualize/", KingdomHandler),
             (r"/leaderboard", LeaderboardHandlerNobots),
             (r"/leaderboard/", LeaderboardHandlerNobots),
+            (r"/static/(.*)", DocumentSFH, {"path": "web/static"}),
+        ]
+        tornado.web.Application.__init__(
+            self, handlers
+        )
+
+
+class RedirectHandler(tornado.web.RequestHandler):
+    def prepare(self):
+        if self.request.protocol == "https":
+            self.redirect("http://%s" % self.request.full_url()[len("https://"):], permanent=True)
+
+    def get(self):
+        self.write("Hello, world")
+
+
+class SecureApplication(tornado.web.Application):
+    def __init__(self):
+        handlers = [
+            (r"/", RedirectHandler),
+            (r"/logsearch", RedirectHandler),
+            (r"/logsearch/", RedirectHandler),
+            (r"/kingdom", RedirectHandler),
+            (r"/kingdom/", RedirectHandler),
+            (r"/kingdomvisualize", RedirectHandler),
+            (r"/kingdomvisualize/", RedirectHandler),
+            (r"/leaderboard", RedirectHandler),
+            (r"/leaderboard/", RedirectHandler),
+            (r"/static/(.*)", RedirectHandler),
+
+            (r"/query/leaderboard", LeaderboardQueryNobots),
+            (r"/query/gokoproratingquery", GokoProRatingQuery),
             (r"/automatch", AutomatchWSH),
             (r"/gs/submit_avatar", AvatarUploadHandler),
             (r"/gs/websocket", MainWSH),
             (r"/gs/avatars/(.*)", AvatarSFH, {"path": "web/static/avatars"}),
-            (r"/static/(.*)", DocumentSFH, {"path": "web/static"}),
             (r"/(.*)", DocumentSFH, {"path": "web/static/gokosalvager/"}),
         ]
         tornado.web.Application.__init__(
@@ -121,7 +140,7 @@ if __name__ == '__main__':
         level=logging.INFO,
         format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
         datefmt='%m-%d %H:%M',
-	filename='/var/log/comp_server.log',
+        filename='/var/log/comp_server.log',
         filemode='a')
 
     # Logg to console
@@ -131,6 +150,18 @@ if __name__ == '__main__':
     console.setFormatter(formatter)
     logging.getLogger('').addHandler(console)
 
+    ssl_options_ai = {
+        "certfile": os.path.join("/etc/ssl/certs/", "andrewiannaccone_com.full.crt"),
+        "keyfile": os.path.join("/etc/ssl/private/", "key.pem")
+    }
+
+    ssl_options_gs = {
+        "certfile": os.path.join("/etc/ssl/certs/", "gokosalvager_com.crt"),
+        #"certfile": os.path.join("/etc/ssl/certs/", "gokosalvager_com.full.crt"),
+        #"certfile": os.path.join("/etc/ssl/certs/", "gokosalvager_com.crt"),
+        "keyfile": os.path.join("/etc/ssl/private/", "key.pem")
+    }
+
     if len(sys.argv) == 2 and sys.argv[1] == 'test':
         ports = [7080, 7443, 7888, 7889]
     else:
@@ -138,20 +169,12 @@ if __name__ == '__main__':
     print(sys.argv)
     print(ports)
 
-    app = ComprehensiveApplication()
-    app.listen(ports[0], "", no_keep_alive=True)
+    iapp = InsecureApplication()
+    iapp.listen(ports[0], "", no_keep_alive=True)
 
-    if (socket.gethostname() == "li566-22"):
-        ssl_options_gs = {
-            "certfile": os.path.join("/etc/ssl/certs/", "gokosalvager_com.full.crt"),
-            "keyfile": os.path.join("/etc/ssl/private/", "key.pem")
-        }
-        app.listen(ports[1], "", ssl_options=ssl_options_gs, no_keep_alive=True)
-        app.listen(ports[2], "", ssl_options=ssl_options_gs, no_keep_alive=True) 
-        app.listen(ports[3], "", ssl_options=ssl_options_gs, no_keep_alive=True) 
-    else:
-        app.listen(ports[1], "", no_keep_alive=True)
-        app.listen(ports[2], "", no_keep_alive=True) 
-        app.listen(ports[3], "", no_keep_alive=True) 
+    sapp = SecureApplication()
+    sapp.listen(ports[1], "", ssl_options=ssl_options_gs)
+    sapp.listen(ports[2], "", ssl_options=ssl_options_gs, no_keep_alive=True) 
+    sapp.listen(ports[3], "", ssl_options=ssl_options_gs, no_keep_alive=True) 
 
     tornado.ioloop.IOLoop.instance().start()

@@ -12,6 +12,8 @@ import time
 
 import requests
 
+from datetime import timedelta
+
 from gdt.logparse import gokoparse
 from gdt.model import db_manager
 
@@ -68,6 +70,7 @@ def download_new_logs(date):
     datestr = date.strftime('%Y%m%d')
     dayurl = 'http://dominion-game-logs.s3.amazonaws.com/%s/index.html' % datestr
     daylogurlbase = 'http://dominion-game-logs.s3.amazonaws.com/game_logs/%s' % datestr
+    logger.info('Downloading new logs from %s' % dayurl )
 
     #r = requests.get(dayurl, timeout=30, proxies=sproxies)
     r = requests.get(dayurl, timeout=30)
@@ -233,12 +236,15 @@ def normal_usage():
         # window (12:00-12:10AM) in which we search for both yesterday's
         # and today's logs.
         #
-        next_day = datetime.datetime.now()
+        today = datetime.datetime.now()
+        yesterday = today - timedelta(days=1)
         parsecount = 0
         last_time = datetime.datetime.now()
         try:
-            download_new_logs(next_day)
-            parsecount = parse_new_logs(next_day)
+            download_new_logs(yesterday)
+            parsecount += parse_new_logs(yesterday)
+            download_new_logs(today)
+            parsecount += parse_new_logs(today)
         except:
             # TODO: Do something about these errors
             logger.error(sys.exc_info()[1])
@@ -253,9 +259,9 @@ def normal_usage():
 
         sec_delta = (datetime.datetime.now() - last_time).seconds
         logger.info('Found %d new logs. Checking again in %d seconds.'
-                    % (parsecount, 30 - sec_delta))
-        if sec_delta < 30:
-            time.sleep(30 - sec_delta)
+                    % (parsecount, 300 - sec_delta))
+        if sec_delta < 300:
+            time.sleep(300 - sec_delta)
 
 if __name__ == '__main__':
     if len(sys.argv) == 3:

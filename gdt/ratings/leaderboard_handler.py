@@ -76,6 +76,7 @@ class LeaderboardHandler(tornado.web.RequestHandler):
             else:
                 ago_full = ('Last recorded game finished %d days ago.  Either my server is '
                 + 'busted or I\'m regenerating the leaderboard right now.') % (ago_d)
+            ago_full = ('Last recorded game finished %d seconds ago.  ') % (ago)
         else:
             last_log_time_str = None
             ago_m = None
@@ -191,6 +192,7 @@ class LeaderboardHandlerNobots(tornado.web.RequestHandler):
             else:
                 ago_full = ('Last recorded game finished %d days ago.  Either my server is '
                 + 'busted or I\'m regenerating the leaderboard right now.') % (ago_d)
+            ago_full = ('Last recorded game finished %d seconds ago.  ') % (ago)
         else:
             last_log_time_str = None
             ago_m = None

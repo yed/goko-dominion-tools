@@ -20,6 +20,7 @@ from gdt.ratings.leaderboard_handler import LeaderboardHandler
 from gdt.ratings.leaderboard_query import LeaderboardQuery
 from gdt.logsearch.logsearch_handler import SearchHandler
 from gdt.kingviz.kingviz_handler import KingdomHandler
+from gdt.logproxy.logproxy_handler import ProxyHandler
 
 from gdt.ratings.assess import GokoProRatingQuery
 
@@ -37,6 +38,7 @@ class InsecureApplication(tornado.web.Application):
             (r"/leaderboard", LeaderboardHandlerNobots),
             (r"/leaderboard/", LeaderboardHandlerNobots),
             (r"/static/(.*)", DocumentSFH, {"path": "web/static"}),
+            (r"/game_logs/(.*)", ProxyHandler, {"upstream_base": "http://dominion-game-logs.s3.amazonaws.com/game_logs/"}),
         ]
         tornado.web.Application.__init__(
             self, handlers

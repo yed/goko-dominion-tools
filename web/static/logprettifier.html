@@ -637,6 +637,7 @@ if (!filename) {
     document.getElementById('y').innerHTML='<h1>Put log address above</h1>';
     return;
 }
+filename = filename.replace('http://dominion-game-logs.s3.amazonaws.com/game_logs/', '/game_logs/')
 xhr.open('GET', filename, true);
 xhr.onreadystatechange= function() {
     document.getElementById('y').innerHTML='<h1>Loading '+this.readyState+'...</h1>';

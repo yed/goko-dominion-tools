@@ -14,4 +14,5 @@ class ProxyHandler(tornado.web.RequestHandler):
     def _download_log(self, path):
         url = urllib.parse.urljoin(self.upstream_base, path)
         r = requests.get(url, timeout=30)
+        r.raise_for_status()
         return r.text

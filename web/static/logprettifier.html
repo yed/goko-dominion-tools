@@ -638,6 +638,7 @@ if (!filename) {
     return;
 }
 filename = filename.replace('http://dominion-game-logs.s3.amazonaws.com/game_logs/', '/game_logs/')
+filename = filename.replace('https://dominion-game-logs.s3.amazonaws.com/game_logs/', '/game_logs/')
 xhr.open('GET', filename, true);
 xhr.onreadystatechange= function() {
     document.getElementById('y').innerHTML='<h1>Loading '+this.readyState+'...</h1>';

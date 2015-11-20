@@ -67,6 +67,7 @@ class SecureApplication(tornado.web.Application):
             (r"/leaderboard", RedirectHandler),
             (r"/leaderboard/", RedirectHandler),
             (r"/static/(.*)", RedirectHandler),
+            (r"/game_logs/(.*)", RedirectHandler),
 
             (r"/query/leaderboard", LeaderboardQueryNobots),
             (r"/query/gokoproratingquery", GokoProRatingQuery),

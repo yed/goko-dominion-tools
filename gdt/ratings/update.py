@@ -70,22 +70,6 @@ def rate_games_since(last_time, last_logfile, rhistories,
         logger.debug('Got %d games to rate' % len(results))
         more_results = False
         for gr in results:
-            # Manual name change for user 'Burning Skull'
-            for j in range(len(gr.pnames)):
-                if gr.pnames[j] == 'burning_scull':
-                    gr.pnames[j] = 'Burning Skull'
-                if gr.pnames[j] == 'hugovj':
-                    gr.pnames[j] = 'Hugovj'
-                if gr.pnames[j] == 'the801':
-                    gr.pnames[j] = 'The 801'
-                if gr.pnames[j] == 'dnkywin':
-                    gr.pnames[j] = 'hsypsx'
-                if gr.pnames[j] == 'soulnet goko':
-                    gr.pnames[j] = 'soulnetgoko'
-                if gr.pnames[j] == 'Jacob Coughlan':
-                    gr.pnames[j] = 'Jake the Yak'
-                if gr.pnames[j] == 'Jared Grant' or gr.pnames[j] == 'XD9':
-                    gr.pnames[j] = 'XD9-2-'
             if i >= max_games:
                 break
             for rh in rhistories:

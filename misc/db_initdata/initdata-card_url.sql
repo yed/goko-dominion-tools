@@ -234,7 +234,7 @@ Port	http://wiki.dominionstrategy.com/images/d/d0/Port.jpg
 Possession	http://wiki.dominionstrategy.com/images/3/3b/Possession.jpg
 Potion	http://wiki.dominionstrategy.com/images/c/c3/Potion.jpg
 Potion-new	http://wiki.dominionstrategy.com/images/6/67/Potion-new.jpg
-Prince	http://wiki.dominionstrategy.com/images/e/ea/Prince.jpg	
+Prince	http://wiki.dominionstrategy.com/images/e/ea/Prince.jpg
 Princess	http://wiki.dominionstrategy.com/images/4/42/Princess.jpg
 Procession	http://wiki.dominionstrategy.com/images/7/7a/Procession.jpg
 Province	http://wiki.dominionstrategy.com/images/8/81/Province.jpg

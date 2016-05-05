@@ -8,11 +8,14 @@ CORE_CARDS = ['estate', 'duchy', 'province', 'colony',
 NON_SUPPLY = {'diadem': 'tournament', 'followers': 'tournament',
               'trusty steed': 'tournament', 'princess': 'tournament',
               'bag of gold': 'tournament', 'madman': 'hermit',
-              'mercenary': 'urchin'}
+              'mercenary': 'urchin', 'soldier': 'peasant', 'fugitive': 
+              'peasant', 'disciple': 'peasant', 'teacher': 'peasant', 
+              'treasure hunter': 'page', 'warrior': 'page', 'hero':
+              'page', 'champion': 'page'}
 
 VP_CARDS = ['estate', 'duchy', 'province', 'colony', 'gardens', 'silk road',
             'vineyard', 'fairgrounds', 'duke', 'feodum', 'great hall',
-            'nobles', 'tunnel', 'island']
+            'nobles', 'tunnel', 'island', 'distant lands']
 
 RUINSES = ['ruined library', 'ruined village', 'survivors', 'ruined mine',
            'ruined market']

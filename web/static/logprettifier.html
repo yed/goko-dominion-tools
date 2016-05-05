@@ -126,6 +126,26 @@ action-victory
   background: -o-linear-gradient(top, rgb(240,240,240), rgb(146,193,125));
   background: -ms-linear-gradient(top, rgb(240,240,240), rgb(146,193,125));
   background: linear-gradient(top, rgb(240,240,240), rgb(146,193,125)); border-radius: 6px; padding: 0px 4px; }
+action-duration-reaction
+{ background: -moz-linear-gradient(top, rgb(254,143,78), rgb(64,168,227));
+  background: -webkit-linear-gradient(top, rgb(254,143,78), rgb(64,168,227));
+  background: -o-linear-gradient(top, rgb(254,143,78), rgb(64,168,227));
+  background: -ms-linear-gradient(top, rgb(254,143,78), rgb(64,168,227));
+  background: linear-gradient(top, rgb(254,143,78), rgb(64,168,227)); border-radius: 6px; padding: 0px 4px; }
+action-reserve
+{ background-color:rgb(215,192,85); border-radius: 6px; padding: 0px 4px;}
+action-reserve-victory
+{ background: -moz-linear-gradient(top, rgb(215,192,85), rgb(146,193,125));
+  background: -webkit-linear-gradient(top, rgb(215,192,85), rgb(146,193,125));
+  background: -o-linear-gradient(top, rgb(215,192,85), rgb(146,193,125));
+  background: -ms-linear-gradient(top, rgb(215,192,85), rgb(146,193,125));
+  background: linear-gradient(top, rgb(215,192,85), rgb(146,193,125)); border-radius: 6px; padding 0px 4px; }
+treasure-reserve
+{ background: -moz-linear-gradient(top, rgb(253,225,100), rgb(215,192,85));
+  background: -webkit-linear-gradient(top, rgb(253,225,100), rgb(215,192,85));
+  background: -o-linear-gradient(top, rgb(253,225,100), rgb(215,192,85));
+  background: -ms-linear-gradient(top, rgb(253,225,100), rgb(215,192,85));
+  background: linear-gradient(top, rgb(253,225,100), rgb(215,192,85)); border-radius: 6px; padding 0px 4px; }
 
 table.sum {
 margin:2px;
@@ -391,9 +411,48 @@ var types = {
 'Journeyman':'action',
 'Merchant Guild':'action',
 'Soothsayer':'action-attack',
+'Coin of the Realm': 'treasure-reserve',
+'Page': 'action',
+'Peasant': 'action',
+'Ratcatcher': 'action-reserve',
+'Raze': 'action',
+'Amulet': 'action-duration',
+'Caravan Guard': 'action-duration-reaction',
+'Dungeon': 'action-duration',
+'Gear': 'action-duration',
+'Guide': 'action-reserve',
+'Duplicate': 'action-reserve',
+'Magpie': 'action',
+'Messenger': 'action',
+'Miser': 'action',
+'Port': 'action',
+'Ranger': 'action',
+'Transmogrify': 'action-reserve',
+'Artificer': 'action',
+'Bridge Troll': 'action-duration',
+'Distant Lands': 'action-reserve-victory',
+'Giant': 'action',
+'Haunted Woods': 'action-duration',
+'Lost City': 'action',
+'Relic': 'treasure',
+'Royal Carriage': 'action-reserve',
+'Storyteller': 'action',
+'Swamp Hag': 'action-duration',
+'Treasure Trove': 'treasure',
+'Wine Merchant': 'action-reserve',
+'Hireling': 'action-duration',
+'Soldier': 'action',
+'Fugitive': 'action',
+'Disciple': 'action',
+'Teacher': 'action-reserve',
+'Treasure Hunter': 'action',
+'Warrior': 'action',
+'Hero': 'action',
+'Champion': 'action-duration',
+'points on tavern mat': 'action-reserve-victory',
 }
 var possessed, newLogMode, newLogPlayers;
-var playerDecks = [], vpchips = [], playervp = [], cointokens = [];
+var playerDecks = [], vpchips = [], playervp = [], cointokens = [], vptavern = [], inheritance = [];
 var vpoint = {
 'Estate':function() {return 1},
 'Colony':function() {return 10},
@@ -414,6 +473,7 @@ var vpoint = {
 'Harem':function() {return 2},
 'Tunnel':function() {return 2},
 'Curse':function() {return -1},
+'Distant Lands':function() {return 0},
 }
 function vp_in_deck(deck) {
     var points = 0;
@@ -429,7 +489,7 @@ function updateCards(player, cards, v) {
 	if (playerDecks[player][cards[i]] <= 0)
 	    delete playerDecks[player][cards[i]];
     }
-    playervp[player] = vpchips[player] + vp_in_deck(playerDecks[player]);
+    playervp[player] = vpchips[player] + vp_in_deck(playerDecks[player]) + vptavern[player];
 }
 function updateDeck(player, action) {
     var h;
@@ -461,6 +521,13 @@ function updateDeck(player, action) {
 	updateCards(player, []);
     } else if (h = action.match(/^plays (Spoils|Madman)$/)) {
 	updateCards(player, [h[1]], -1);
+    } else if (h = action.match(/^puts Distant Lands on the Tavern Mat$/)) {
+    vptavern[player]+=4;
+    console.log(vptavern[player]);
+    updateCards(player, []);
+    } else if (h = action.match(/^inherits (.*)/)) {
+    inheritance[player] = h[1];
+    updateCards(player, []);
     }
 }
 
@@ -505,7 +572,7 @@ function format(x) {
 	var players = [];
 	var graphdata = {labels:[0],datasets:[]};
 	var graphmin = 0, graphmax = 10;
-	playerDecks = []; vpchips = []; playervp = []; cointokens = [];
+	playerDecks = []; vpchips = []; playervp = []; cointokens = []; vptavern = [], inheritance = [];
 	newLogPlayers = 0;
 	tmp += '<p style="text-align:center"><a href="#Game Over"><button>End of the game</button></a></p>';
 	for (var i = 0; i < pars.length; i++) {
@@ -541,7 +608,7 @@ function format(x) {
 			tmp2+=colorize(sc[k]);
 			tmp2+='</td></tr>';
 		    }
-		    var cur_vp = vp_in_deck(playerDecks[j]) + vpchips[j];
+		    var cur_vp = vp_in_deck(playerDecks[j]) + vpchips[j] + vptavern[j];
 		    tmp2+='<tr><td>' + tc + '</td><td>cards in deck</td></tr>';
 		    if (vpchips[j])
 		    {
@@ -557,6 +624,10 @@ function format(x) {
 		    	else
 		    		tmp2+='<tr><td>' + cointokens[j] + '</td><td>' + colorize('coin tokens') + '</td></tr>';
 		    }
+            if (vptavern[j])
+            {
+                tmp2+='<tr><td>' + vptavern[j] + '</td><td>' + colorize('points on tavern mat') + '</td></tr>';
+            }
 		    if(cur_vp == 1 || cur_vp == -1)
 		    	tmp2+='<tr><td>' + cur_vp + '</td><td>victory point</td></tr>';
 		    else
@@ -588,6 +659,7 @@ function format(x) {
 		    players.push(player);
 		    playerDecks.push({});
 		    vpchips.push(0);
+            vptavern.push(0);
 		    if(HasBaker)
 		    	cointokens.push(1) ;
 		    else
@@ -600,9 +672,13 @@ function format(x) {
 		    newLogPlayers++;
 		}
 		for (k = 0; k < players.length; k++) if (line.indexOf(players[k] + ' - ') == 0) {
-		    updateDeck(k, line.substring(players[k].length + 3));
+		    action = line.substring(players[k].length + 3);
+            updateDeck(k, action);
+            if (action.match(/^plays Estate/)) {
+                action+=' as ' + inheritance[k];
+            }
 		    tmp += '<td class="c1 p'+(k+1)+'">'+players[k]+'</td>';
-		    tmp += '<td>'+colorize(line.substring(players[k].length + 3))+'</td>';
+		    tmp += '<td>'+colorize(action)+'</td>';
 		    break;
 		}
 		if (k == players.length) {

@@ -12,6 +12,7 @@ from gdt.model.domgame import GainRet
 
 # Regular expressions used to parse goko logs.  Precompiled for speed.
 RE_RATING = re.compile('Rating system: (.*)')
+RE_EVENTS = re.compile('[eE]vents: (.*)')
 RE_SUPPLY = re.compile('[sS]upply cards: (.*)')
 RE_COMMA = re.compile(', ')
 RE_STARTC = re.compile('(.*) - starting cards: (.*)')
@@ -59,7 +60,7 @@ def parse_goko_log(logtext):
 
     # First just sort the log lines.  This doubles the regex matching we have
     # to do, but it keeps the code cleaner.
-    supplyl, ratingl = (None, None)
+    supplyl, ratingl, eventl = (None, None, None)
     startcl, turnl, gainl, retl = ([], [], [], [])
     vpl, nturnl, quitl, placel = ([], [], [], [])
     resignl = []
@@ -78,6 +79,10 @@ def parse_goko_log(logtext):
     for line in logtext.split('\n'):
         line_number += 1
 
+        m = RE_EVENTS.match(line)
+        if m:
+            eventl = m
+            continue
         m = RE_SUPPLY.match(line)
         if m:
             supplyl = m
@@ -167,6 +172,9 @@ def parse_goko_log(logtext):
     ## PRE-GAME SETUP ###
 
     # Parse supply
+    if eventl != None:
+        for ename in RE_COMMA.split(eventl.group(1)):
+            supply.append(ename)   
     for cname in RE_COMMA.split(supplyl.group(1)):
         if cname in RUINSES:
             cname = 'Ruins'
@@ -175,6 +183,7 @@ def parse_goko_log(logtext):
         if cname == 'Colony':
             colony = True
         supply.append(cname)
+
 
     # Parse rating system (not available for pre-May logs)
     if ratingl:

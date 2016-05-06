@@ -528,6 +528,12 @@ function updateDeck(player, action) {
     } else if (h = action.match(/^inherits (.*)/)) {
     inheritance[player] = h[1];
     updateCards(player, []);
+    } else if (h = action.match(/^exchanges ([0-9]*) (.*) cards for (.*) cards$/)) {
+    updateCards(player, [h[2]], 0 - parseInt(h[1]));
+    updateCards(player, [h[3]], parseInt(h[1]));
+    } else if (h = action.match(/^exchanges (.*) for (.*)$/)) {
+    updateCards(player, [h[1]], -1);
+    updateCards(player, [h[2]], 1);
     }
 }
 
@@ -689,7 +695,10 @@ function format(x) {
 		    } else if (i == 0 && (m = line.match(/^(Supply cards): (.*)/))) {
 			tmp += '<td class="c1">'+m[1]+'</td>';
 			tmp += '<td>'+colorize(m[2])+'</td>';
-		    } else if (i == 0 && (m = line.match(/^(Rating system): (.*)/))) {
+		    } else if (i == 0 && (m = line.match(/^(Events): (.*)/))) {
+            tmp += '<td class="c1">'+m[1]+'</td>';
+            tmp += '<td>'+m[2]+'</td>';
+            } else if (i == 0 && (m = line.match(/^(Rating system): (.*)/))) {
 			tmp += '<td class="c1">'+m[1]+'</td>';
 			tmp += '<td>'+m[2]+'</td>';
 		    } else tmp += '<td colspan="2">'+colorize(line)+'</td>';

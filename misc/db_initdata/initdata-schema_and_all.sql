@@ -1040,7 +1040,7 @@ Lookout	http://wiki.dominionstrategy.com/images/c/c6/Lookout.jpg
 Lost Arts	http://wiki.dominionstrategy.com/images/4/4b/Lost_Arts.jpg
 Lost City	http://wiki.dominionstrategy.com/images/9/9a/Lost_City.jpg
 Madman	http://wiki.dominionstrategy.com/images/1/19/Madman.jpg
-Magpie	http://wiki.dominionstrategy.com/images/5/59/Duplicate.jpg
+Magpie	http://wiki.dominionstrategy.com/images/1/10/Magpie.jpg
 Mandarin	http://wiki.dominionstrategy.com/images/6/68/Mandarin.jpg
 Marauder	http://wiki.dominionstrategy.com/images/5/5e/Marauder.jpg
 Margrave	http://wiki.dominionstrategy.com/images/0/06/Margrave.jpg

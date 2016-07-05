@@ -464,7 +464,7 @@ var vpoint = {
 'Gardens':function(d) {var s=0;for(var c in d)s+=d[c];return Math.floor(s/10)},
 'Province':function() {return 6},
 'Silk Road':function(d) {var s=0;for(var c in d)if(types[c].match(/victory/))s+=d[c];return Math.floor(s/4)},
-'Vineyard':function(d) {var s=0;for(var c in d)if(types[c].match(/\baction/))s+=d[c];return Math.floor(s/3)},
+'Vineyard':function(d, p) {var s=0;for(var c in d)if(types[c].match(/\baction/) || (c == 'Estate' && inheritance[p]))s+=d[c];if (inheritance[p])s+=1;return Math.floor(s/3)},
 //'Overgrown Estate':function() {return 0},
 'Dame Josephine':function() {return 2},
 'Great Hall':function() {return 1},
@@ -475,10 +475,10 @@ var vpoint = {
 'Curse':function() {return -1},
 'Distant Lands':function() {return 0},
 }
-function vp_in_deck(deck) {
+function vp_in_deck(deck, player) {
     var points = 0;
     for (var card in deck) if(vpoint[card]) {
-	points += deck[card] * vpoint[card](deck);
+	points += deck[card] * vpoint[card](deck, player);
     }
     return points;
 }
@@ -489,7 +489,7 @@ function updateCards(player, cards, v) {
 	if (playerDecks[player][cards[i]] <= 0)
 	    delete playerDecks[player][cards[i]];
     }
-    playervp[player] = vpchips[player] + vp_in_deck(playerDecks[player]) + vptavern[player];
+    playervp[player] = vpchips[player] + vp_in_deck(playerDecks[player], player) + vptavern[player];
 }
 function updateDeck(player, action) {
     var h;
@@ -614,8 +614,11 @@ function format(x) {
 			tmp2+=colorize(sc[k]);
 			tmp2+='</td></tr>';
 		    }
-		    var cur_vp = vp_in_deck(playerDecks[j]) + vpchips[j] + vptavern[j];
+		    var cur_vp = vp_in_deck(playerDecks[j], j) + vpchips[j] + vptavern[j];
 		    tmp2+='<tr><td>' + tc + '</td><td>cards in deck</td></tr>';
+            if (inheritance[j]) {
+                tmp2+='<tr><td>1</td><td> inherited' + colorize(inheritance[j]) + '</td></tr>';
+            }
 		    if (vpchips[j])
 		    {
 		    	if(vpchips[j] == 1 || vpchips[j] == -1)
